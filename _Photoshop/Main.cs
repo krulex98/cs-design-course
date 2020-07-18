@@ -5,12 +5,12 @@ namespace MyPhotoshop
 {
 	class MainClass
 	{
-        [STAThread]
-		public static void Main (string[] args)
+		[STAThread]
+		public static void Main(string[] args)
 		{
-			var window=new MainWindow();
-			window.AddFilter (new LighteningFilter());
-			Application.Run (window);
+			var window = new MainWindow();
+			window.AddFilter(new LighteningFilter());
+			Application.Run(window);
 		}
 	}
 }
