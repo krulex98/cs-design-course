@@ -12,10 +12,7 @@ namespace MyPhotoshop
 			};
 		}
 
-		public override string ToString()
-		{
-			return "Осветление/затемнение";
-		}
+		public override string ToString() => "Осветление/затемнение";
 
 		public Photo Process(Photo original, double[] parameters)
 		{
@@ -27,11 +24,12 @@ namespace MyPhotoshop
 			for (var x = 0; x < result.width; x++)
 				for (var y = 0; y < result.height; y++)
 				{
-					result.data[x, y] = new Pixel(
-						original.data[x, y].R * parameters[0],
-						original.data[x, y].G * parameters[0],
-						original.data[x, y].B * parameters[0]
-					);
+					result.data[x, y] = new Pixel
+					{
+						R = original.data[x, y].R * parameters[0],
+						G = original.data[x, y].G * parameters[0],
+						B = original.data[x, y].B * parameters[0]
+					};
 				}
 
 			return result;

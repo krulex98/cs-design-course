@@ -1,16 +1,34 @@
-﻿namespace MyPhotoshop
+﻿using System;
+
+namespace MyPhotoshop
 {
 	public class Pixel
 	{
-		public readonly double R;
-		public readonly double G;
-		public readonly double B;
-
-		public Pixel(double r = 0, double g = 0, double b = 0)
+		private double _r;
+		public double R
 		{
-			R = r;
-			G = g;
-			B = b;
+			get => _r;
+			set { Check(value); _r = value; }
+		}
+		
+		private double _g;
+		public double G 
+		{
+			get => _g;
+			set { Check(value); _g = value; }
+		}
+		
+		private double _b;
+		public double B
+		{
+			get => _b;
+			set { Check(value); _b = value; }
+		}
+
+		private static void Check(double val)
+		{
+			if (val < 0 || val > 1)
+				throw new ArgumentException($"Wrong channel value {val} (the value must be between 0 and 1");
 		}
 	}
 }
