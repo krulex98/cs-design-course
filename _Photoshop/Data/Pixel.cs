@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace MyPhotoshop
 {
@@ -32,6 +33,16 @@ namespace MyPhotoshop
 			R = r;
 			G = g;
 			B = b;
+		}
+		
+		public static Pixel operator *(Pixel p, double val)
+		{
+			return new Pixel(p.R * val, p.G * val, p.B * val);
+		}
+
+		public static Pixel operator *(double val, Pixel p)
+		{
+			return p * val;
 		}
 
 		private static void Check(double val)
