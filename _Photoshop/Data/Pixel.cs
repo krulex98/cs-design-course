@@ -2,7 +2,7 @@
 
 namespace MyPhotoshop
 {
-	public class Pixel
+	public struct Pixel
 	{
 		private double _r;
 		public double R
@@ -23,6 +23,15 @@ namespace MyPhotoshop
 		{
 			get => _b;
 			set { Check(value); _b = value; }
+		}
+		
+		public Pixel(double r, double g, double b)
+		{
+			_r = _g = _b = 0;
+			
+			R = r;
+			G = g;
+			B = b;
 		}
 
 		private static void Check(double val)

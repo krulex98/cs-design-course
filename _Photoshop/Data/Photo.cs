@@ -14,12 +14,12 @@ namespace MyPhotoshop
 			Width = w;
 			Height = h;
 			_data = new Pixel[w, h];
-			
-			for(var x = 0; x < w; x++)
-				for (var y = 0; y < h; y++)
-					_data[x, y] = new Pixel();
 		}
-		
-		public Pixel this[int x, int y] => _data[x, y];
+
+		public Pixel this[int x, int y]
+		{
+			get => _data[x, y];
+			set => _data[x, y] = value;
+		}
 	}
 }
