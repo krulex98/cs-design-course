@@ -23,12 +23,12 @@ namespace MyPhotoshop
 			var result=new Photo();
 			result.width=original.width;
 			result.height=original.height;
-			result.data=new double[result.width,result.height,3];
+			result.data=new Pixel[result.width,result.height];
+
+			for (var x = 0; x < result.width; x++)
+				for (var y = 0; y < result.height; y++)
+					result.data[x, y] = original.data[x, y] * parameters[0];
 			
-			for (int x=0;x<result.width;x++)
-				for (int y=0;y<result.height;y++)
-					for (int z=0;z<3;z++)
-						result.data[x,y,z]=original.data[x,y,z]*parameters[0];
 			return result;
 		}
 	}
