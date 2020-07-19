@@ -1,32 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Incapsulation.Failures
 {
-
-    public class Common
+    public class Device
     {
-        public static int IsFailureSerious(int failureType)
+        private int _id;
+        public string Name { get; }
+
+        public Device(int id, string name)
         {
-            if (failureType%2==0) return 1;
-            return 0;
+            _id = id;
+            Name = name;
+        }
+    }
+
+    public enum FailureType
+    {
+        UnexpectedShutdown = 0,
+        NonResponding = 1,
+        HardwareFailure = 2,
+        ConnectionProblems = 3
+    }
+    
+    public class Failure
+    {
+        private readonly FailureType _failureType;
+        
+        public Failure(int type)
+        {
+            _failureType = (FailureType) type;
         }
 
-
-        public static int Earlier(object[] v, int day, int month, int year)
+        public int IsFailureSerious()
         {
-            int vYear = (int)v[2];
-            int vMonth = (int)v[1];
-            int vDay = (int)v[0];
-            if (vYear < year) return 1;
-            if (vYear > year) return 0;
-            if (vMonth < month) return 1;
-            if (vMonth > month) return 0;
-            if (vDay < day) return 1;
-            return 0;
+            return (int)_failureType % 2 == 0 ? 1 : 0;
         }
     }
 
@@ -35,38 +44,45 @@ namespace Incapsulation.Failures
         /// <summary>
         /// </summary>
         /// <param name="day"></param>
-        /// <param name="failureTypes">
-        /// 0 for unexpected shutdown, 
-        /// 1 for short non-responding, 
-        /// 2 for hardware failures, 
-        /// 3 for connection problems
-        /// </param>
+        /// <param name="failureTypes"></param>
         /// <param name="deviceId"></param>
         /// <param name="times"></param>
         /// <param name="devices"></param>
         /// <returns></returns>
         public static List<string> FindDevicesFailedBeforeDateObsolete(
-            int day,
-            int month,
-            int year,
+            int day, int month, int year,
             int[] failureTypes, 
             int[] deviceId, 
             object[][] times,
             List<Dictionary<string, object>> devices)
         {
+            var date = new DateTime(year, month, day);
 
-            var problematicDevices = new HashSet<int>();
-            for (int i = 0; i < failureTypes.Length; i++)
-                if (Common.IsFailureSerious(failureTypes[i])==1 && Common.Earlier(times[i], day, month, year)==1)
-                    problematicDevices.Add(deviceId[i]);
+            var failureList = failureTypes
+                .Select(failureType => new Failure(failureType))
+                .ToList();
 
-            var result = new List<string>();
-            foreach (var device in devices)
-                if (problematicDevices.Contains((int)device["DeviceId"]))
-                    result.Add(device["Name"] as string);
+            var deviceList = devices
+                .Select(device => new Device((int) device["DeviceId"], (string) device["Name"]))
+                .ToList();
 
-            return result;
+            var timeList = times
+                .Select(time => new DateTime((int)time[2], (int)time[1], (int)time[0]))
+                .ToList();
+            
+            return FindDevicesFailedBeforeDate(date, failureList, deviceList, timeList);
         }
-           
+
+        public static List<string> FindDevicesFailedBeforeDate
+            (DateTime date, List<Failure> failures, List<Device> devices, List<DateTime> times)
+        {
+            var result = new List<Device>();
+            
+            for (var i = 0; i < failures.Count; i++)
+                if (failures[i].IsFailureSerious() == 1 && times[i] < date)
+                    result.Add(devices[i]);
+
+            return result.Select(r => r.Name).ToList();
+        }
     }
 }
