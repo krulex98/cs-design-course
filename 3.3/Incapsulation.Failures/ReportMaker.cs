@@ -6,36 +6,47 @@ namespace Incapsulation.Failures
 {
     public class Device
     {
-        private int _id;
+        public int Id { get; }
         public string Name { get; }
 
         public Device(int id, string name)
         {
-            _id = id;
+            Id = id;
             Name = name;
         }
     }
 
     public enum FailureType
     {
-        UnexpectedShutdown = 0,
+        Shutdown = 0,
         NonResponding = 1,
-        HardwareFailure = 2,
-        ConnectionProblems = 3
+        Hardware = 2,
+        Connection = 3
     }
     
     public class Failure
     {
-        private readonly FailureType _failureType;
+        public int DeviceId { get; }
         
-        public Failure(int type)
+        private readonly FailureType _failureType;
+        private readonly DateTime _time;
+
+        public Failure(int type, DateTime time, int deviceId)
         {
+            DeviceId = deviceId;
+            
+            _time = time;
             _failureType = (FailureType) type;
         }
 
         public int IsFailureSerious()
         {
             return (int)_failureType % 2 == 0 ? 1 : 0;
+        }
+
+        public bool IsBeforeDate(DateTime date)
+        {
+            return _time < date;
         }
     }
 
@@ -58,29 +69,29 @@ namespace Incapsulation.Failures
         {
             var date = new DateTime(year, month, day);
 
-            var failureList = failureTypes
-                .Select(failureType => new Failure(failureType))
-                .ToList();
+            var failureList = new List<Failure>();
+
+            for (var i = 0; i < failureTypes.Length; i++)
+            {
+                var time = new DateTime((int)times[i][2], (int)times[i][1], (int)times[i][0]);
+                failureList.Add(new Failure(failureTypes[i], time, deviceId[i]));
+            }
 
             var deviceList = devices
                 .Select(device => new Device((int) device["DeviceId"], (string) device["Name"]))
                 .ToList();
-
-            var timeList = times
-                .Select(time => new DateTime((int)time[2], (int)time[1], (int)time[0]))
-                .ToList();
             
-            return FindDevicesFailedBeforeDate(date, failureList, deviceList, timeList);
+            return FindDevicesFailedBeforeDate(date, failureList, deviceList);
         }
 
         public static List<string> FindDevicesFailedBeforeDate
-            (DateTime date, List<Failure> failures, List<Device> devices, List<DateTime> times)
+            (DateTime date, List<Failure> failures, List<Device> devices)
         {
             var result = new List<Device>();
             
-            for (var i = 0; i < failures.Count; i++)
-                if (failures[i].IsFailureSerious() == 1 && times[i] < date)
-                    result.Add(devices[i]);
+            foreach (var failure in failures)
+                if (failure.IsFailureSerious() == 1 && failure.IsBeforeDate(date))
+                    result.Add(devices.Find(d => d.Id == failure.DeviceId ));
 
             return result.Select(r => r.Name).ToList();
         }
