@@ -2,16 +2,8 @@
 {
 	public class GrayScaleParameters : IParameters
 	{
-		public double Coefficient { get; private set; }
-		
-		public ParameterInfo[] GetDescription()
-		{
-			return new ParameterInfo[]{};
-		}
+		public ParameterInfo[] GetDescription() => new ParameterInfo[]{};
 
-		public void Parse(double[] parameters)
-		{
-			Coefficient = 0;
-		}
+		public void Parse(double[] parameters) { }
 	}
 }

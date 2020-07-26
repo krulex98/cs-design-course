@@ -8,7 +8,7 @@ namespace MyPhotoshop
 
 		public override Pixel ProcessFilter(Pixel original, IParameters parameters)
 		{
-			return original * parameters.Coefficient;
+			return original * ((LighteningParameters) parameters).Coefficient;
 		}
 	}
 }
