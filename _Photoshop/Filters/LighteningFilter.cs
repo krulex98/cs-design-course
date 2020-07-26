@@ -1,10 +1,8 @@
-using System;
-
 namespace MyPhotoshop
 {
-	public class LighteningFilter : IFilter
+	public class LighteningFilter : PixelFilter
 	{
-		public ParameterInfo[] GetParameters()
+		public override ParameterInfo[] GetParameters()
 		{
 			return new[]
 			{
@@ -14,15 +12,9 @@ namespace MyPhotoshop
 
 		public override string ToString() => "Осветление/затемнение";
 
-		public Photo Process(Photo original, double[] parameters)
+		public override Pixel ProcessFilter(Pixel original, double[] parameters)
 		{
-			var result = new Photo(original.Width, original.Height);
-
-			for (var x = 0; x < result.Width; x++)
-				for (var y = 0; y < result.Height; y++)
-					result[x, y] = original[x, y] * parameters[0];
-
-			return result;
+			return original * parameters[0];
 		}
 	}
 }
