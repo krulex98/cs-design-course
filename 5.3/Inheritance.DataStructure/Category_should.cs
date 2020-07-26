@@ -1,9 +1,5 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 // ReSharper disable IsExpressionAlwaysTrue
 
 namespace Inheritance.DataStructure
@@ -12,8 +8,8 @@ namespace Inheritance.DataStructure
     public class Category_should
     {
         Category A11 = new Category("A", MessageType.Incoming, MessageTopic.Subscribe);
-        Category A21 = new Category("A", MessageType.Outgoing, MessageTopic.Subscribe);
         Category A12 = new Category("A", MessageType.Incoming, MessageTopic.Error);
+        Category A21 = new Category("A", MessageType.Outgoing, MessageTopic.Subscribe);
         Category B11 = new Category("B", MessageType.Incoming, MessageTopic.Subscribe);
 
         Category[] Descending()
