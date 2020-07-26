@@ -7,6 +7,6 @@ namespace MyPhotoshop
 		
 		Photo Process(Photo original, double[] parameters);
 
-		Pixel ProcessFilter(Pixel original, double[] parameters);
+		Pixel ProcessFilter(Pixel original, IParameters parameters);
 	}
 }
