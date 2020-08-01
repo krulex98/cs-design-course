@@ -1,8 +1,7 @@
-﻿
-namespace Inheritance.MapObjects
+﻿namespace Inheritance.MapObjects
 {
-    public class Treasure
-    {
-        public int Amount { get; set; }
-    }
+	public class Treasure
+	{
+		public int Amount { get; set; }
+	}
 }
