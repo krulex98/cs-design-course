@@ -1,41 +1,12 @@
 ﻿namespace Inheritance.MapObjects
 {
-	public class Dwelling
-	{
-		public int Owner { get; set; }
-	}
-
-	public class Mine
-	{
-		public int Owner { get; set; }
-		public Army Army { get; set; }
-		public Treasure Treasure { get; set; }
-	}
-
-	public class Creeps
-	{
-		public Army Army { get; set; }
-		public Treasure Treasure { get; set; }
-	}
-
-	public class Wolfs
-	{
-		public Army Army { get; set; }
-	}
-
-	public class ResourcePile
-	{
-		public Treasure Treasure { get; set; }
-	}
-
 	public static class Interaction
 	{
 		public static void Make(Player player, object mapObject)
 		{
-			if (mapObject is Dwelling)
+			if (mapObject is IAssign assignObject)
 			{
-				((Dwelling) mapObject).Owner = player.Id;
-				return;
+				assignObject.Assign(player);
 			}
 
 			if (mapObject is Mine)

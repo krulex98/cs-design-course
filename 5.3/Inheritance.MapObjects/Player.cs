@@ -5,7 +5,6 @@
 		public int Gold { get; private set; }
 		public bool Dead { get; private set; }
 
-
 		public bool CanBeat(Army army)
 		{
 			return army.Power < 5;
