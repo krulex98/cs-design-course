@@ -1,12 +1,9 @@
 ﻿namespace MyPhotoshop
 {
-	public abstract class PixelFilter: ParametrizedFilter
+	public abstract class PixelFilter<TParameters>: ParametrizedFilter<TParameters>
+		where TParameters: class, IParameters, new()
 	{
-		protected PixelFilter(IParameters parameters) : base(parameters)
-		{
-		}
-		
-		protected override Photo Process(Photo original, IParameters parameters)
+		protected override Photo Process(Photo original, TParameters parameters)
 		{
 			var result = new Photo(original.Width, original.Height);
 			
