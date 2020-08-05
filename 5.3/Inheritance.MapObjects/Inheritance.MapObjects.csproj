@@ -52,18 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Army.cs" />
-    <Compile Include="Creeps.cs" />
-    <Compile Include="Dwelling.cs" />
-    <Compile Include="Interfaces.cs" />
-    <Compile Include="Mine.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Player_should.cs" />
-    <Compile Include="ResourcePile.cs" />
     <Compile Include="Treasure.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Wolfs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

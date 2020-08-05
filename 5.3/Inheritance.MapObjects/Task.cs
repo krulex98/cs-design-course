@@ -1,45 +1,69 @@
 ﻿namespace Inheritance.MapObjects
 {
+	public interface IOwner
+	{
+		int Owner { get; set; }
+	}
+
+	public interface IArmy
+	{
+		Army Army { get; set; }
+	}
+
+	public interface ITreasure
+	{
+		Treasure Treasure { get; set; }
+	}
+
+	public class Mine: IArmy, IOwner, ITreasure
+	{
+		public int Owner { get; set; }
+		public Treasure Treasure { get; set; }
+		public Army Army { get; set; }
+	}
+	
+	public class Creeps: IArmy, ITreasure
+	{
+		public Army Army { get; set; }
+		public Treasure Treasure { get; set; }
+	}
+	
+	public class Wolfs: IArmy
+	{
+		public Army Army { get; set; }
+	}
+	
+	public class Dwelling: IOwner
+	{
+		public int Owner { get; set; }
+	}
+	
+	public class ResourcePile: ITreasure
+	{
+		public Treasure Treasure { get; set; }
+	}
+	
 	public static class Interaction
 	{
 		public static void Make(Player player, object mapObject)
 		{
-			if (mapObject is IAssign assignObject)
+			if (mapObject is IArmy army)
 			{
-				assignObject.Assign(player);
-			}
-
-			if (mapObject is Mine)
-			{
-				if (player.CanBeat(((Mine) mapObject).Army))
+				if (!player.CanBeat(army.Army))
 				{
-					((Mine) mapObject).Owner = player.Id;
-					player.Consume(((Mine) mapObject).Treasure);
+					player.Die();
+					return;	
 				}
-				else player.Die();
-
-				return;
+			}
+			
+			if (mapObject is ITreasure treasure)
+			{
+				player.Consume(treasure.Treasure);
 			}
 
-			if (mapObject is Creeps)
+			if (mapObject is IOwner owner)
 			{
-				if (player.CanBeat(((Creeps) mapObject).Army))
-					player.Consume(((Creeps) mapObject).Treasure);
-				else
-					player.Die();
-				return;
-			}
-
-			if (mapObject is ResourcePile)
-			{
-				player.Consume(((ResourcePile) mapObject).Treasure);
-				return;
-			}
-
-			if (mapObject is Wolfs)
-			{
-				if (!player.CanBeat(((Wolfs) mapObject).Army))
-					player.Die();
+				owner.Owner = player.Id;
 			}
 		}
 	}
