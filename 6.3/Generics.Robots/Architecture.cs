@@ -1,71 +1,65 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Generics.Robots
 {
-	public abstract class RobotAI
+	public interface RobotAI<out TCommand> where TCommand : IMoveCommand
 	{
-		public abstract object GetCommand();
+		TCommand GetCommand();
 	}
 
-	public class ShooterAI : RobotAI
+	public class ShooterAI : RobotAI<IShooterMoveCommand>
 	{
 		int counter = 1;
 
-		public override object GetCommand()
+		public IShooterMoveCommand GetCommand()
 		{
 			return ShooterCommand.ForCounter(counter++);
 		}
 	}
 
-	public class BuilderAI : RobotAI
+	public class BuilderAI : RobotAI<IMoveCommand>
 	{
 		int counter = 1;
 
-		public override object GetCommand()
+		public IMoveCommand GetCommand()
 		{
 			return BuilderCommand.ForCounter(counter++);
 		}
 	}
 
-	public abstract class Device
+	public interface IDevice<in TCommand> where TCommand : IMoveCommand
 	{
-		public abstract string ExecuteCommand(object command);
+		string ExecuteCommand(TCommand command);
 	}
 
-	public class Mover : Device
+	public class Mover : IDevice<IMoveCommand>
 	{
-		public override string ExecuteCommand(object _command)
+		public string ExecuteCommand(IMoveCommand command)
 		{
-			var command = _command as IMoveCommand;
 			if (command == null)
 				throw new ArgumentException();
 			return $"MOV {command.Destination.X}, {command.Destination.Y}";
 		}
 	}
 
-	public class ShooterMover : Device
+	public class ShooterMover : IDevice<IMoveCommand>
 	{
-		public override string ExecuteCommand(object _command)
+		public string ExecuteCommand(IMoveCommand _command)
 		{
-			var command = _command as IShooterMoveCommand;
-			if (command == null)
+			if (!(_command is IShooterMoveCommand command))
 				throw new ArgumentException();
 			var hide = command.ShouldHide ? "YES" : "NO";
 			return $"MOV {command.Destination.X}, {command.Destination.Y}, USE COVER {hide}";
 		}
 	}
 
-	public class Robot
+	public class Robot<TCommand> where TCommand : IMoveCommand
 	{
-		private readonly RobotAI ai;
-		private readonly Device device;
+		private readonly RobotAI<TCommand> ai;
+		private readonly IDevice<TCommand> device;
 
-		public Robot(RobotAI ai, Device executor)
+		public Robot(RobotAI<TCommand> ai, IDevice<TCommand> executor)
 		{
 			this.ai = ai;
 			this.device = executor;
@@ -81,10 +75,13 @@ namespace Generics.Robots
 				yield return device.ExecuteCommand(command);
 			}
 		}
+	}
 
-		public static Robot Create<TCommand>(RobotAI ai, Device executor)
+	public static class Robot
+	{
+		public static Robot<T> Create<T>(RobotAI<T> ai, IDevice<T> executor) where T : IMoveCommand
 		{
-			return new Robot(ai, executor);
+			return new Robot<T>(ai, executor);
 		}
 	}
 }
