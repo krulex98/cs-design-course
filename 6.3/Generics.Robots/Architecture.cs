@@ -3,26 +3,26 @@ using System.Collections.Generic;
 
 namespace Generics.Robots
 {
-	public interface RobotAI<out TCommand> where TCommand : IMoveCommand
+	public interface IRobotAI<out TCommand> where TCommand : IMoveCommand
 	{
 		TCommand GetCommand();
 	}
 
-	public class ShooterAI : RobotAI<IShooterMoveCommand>
+	public class ShooterAI : IRobotAI<ShooterCommand>
 	{
 		int counter = 1;
 
-		public IShooterMoveCommand GetCommand()
+		public ShooterCommand GetCommand()
 		{
 			return ShooterCommand.ForCounter(counter++);
 		}
 	}
 
-	public class BuilderAI : RobotAI<IMoveCommand>
+	public class BuilderAI : IRobotAI<BuilderCommand>
 	{
 		int counter = 1;
 
-		public IMoveCommand GetCommand()
+		public BuilderCommand GetCommand()
 		{
 			return BuilderCommand.ForCounter(counter++);
 		}
@@ -43,12 +43,10 @@ namespace Generics.Robots
 		}
 	}
 
-	public class ShooterMover : IDevice<IMoveCommand>
+	public class ShooterMover : IDevice<IShooterMoveCommand>
 	{
-		public string ExecuteCommand(IMoveCommand _command)
+		public string ExecuteCommand(IShooterMoveCommand command)
 		{
-			if (!(_command is IShooterMoveCommand command))
-				throw new ArgumentException();
 			var hide = command.ShouldHide ? "YES" : "NO";
 			return $"MOV {command.Destination.X}, {command.Destination.Y}, USE COVER {hide}";
 		}
@@ -56,10 +54,10 @@ namespace Generics.Robots
 
 	public class Robot<TCommand> where TCommand : IMoveCommand
 	{
-		private readonly RobotAI<TCommand> ai;
+		private readonly IRobotAI<TCommand> ai;
 		private readonly IDevice<TCommand> device;
 
-		public Robot(RobotAI<TCommand> ai, IDevice<TCommand> executor)
+		public Robot(IRobotAI<TCommand> ai, IDevice<TCommand> executor)
 		{
 			this.ai = ai;
 			this.device = executor;
@@ -79,7 +77,7 @@ namespace Generics.Robots
 
 	public static class Robot
 	{
-		public static Robot<T> Create<T>(RobotAI<T> ai, IDevice<T> executor) where T : IMoveCommand
+		public static Robot<T> Create<T>(IRobotAI<T> ai, IDevice<T> executor) where T : IMoveCommand
 		{
 			return new Robot<T>(ai, executor);
 		}
